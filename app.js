@@ -27,7 +27,6 @@ app.post('/signup', async (req, res) => {
   const newUser = new User({ name, email, password ,balance });
   try {
     await newUser.save();
-    console.log('User created:', newUser.name);
     const tokenData = { details: { name: newUser.name, email: newUser.email ,balance:newUser.balance} };
 
     const token = jwt.sign(tokenData, secret);
@@ -46,7 +45,6 @@ app.get('/data', async (req, res) => {
     try {
       const user = await User.findOne({email:useremail});
       if (user) {
-        console.log(user)
         res.json({data:decoded,Bal:user.balance});
       } else {
         res.status(400).json({ message: 'Error Occurred' ,status:false});
@@ -64,7 +62,6 @@ app.put('/update', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const decoded = jwt.verify(token, secret);
   const email = decoded.details.email;
-  console.log(email);
   const existingUser = await User.findOne({ email });
   if (!existingUser) {
     return res.status(404).json({ message: 'User not found', status: false });
@@ -73,7 +70,6 @@ app.put('/update', async (req, res) => {
   existingUser.balance += updateAmount;
   try {
     await existingUser.save();
-    console.log('Balance updated:', existingUser.balance);
     res.json({ message: 'Balance updated successfully', data: existingUser, status: true });
   } catch (error) {
     console.error(error);
