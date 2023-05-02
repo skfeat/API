@@ -38,11 +38,22 @@ app.post('/signup', async (req, res) => {
   }
 });
 //===================== GET DATA JWT REQUEST FOR API ==============
-app.get('/data', (req, res) => {
+app.get('/data', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   try {
     const decoded = jwt.verify(token, secret);
-    res.json(decoded);
+    const useremail = decoded.details.email
+    try {
+      const user = await User.findOne({email:useremail});
+      if (user) {
+        console.log(user)
+        res.json({data:decoded,Bal:user.balance});
+      } else {
+        res.status(400).json({ message: 'Error Occurred' ,status:false});
+      }
+    } catch (error) {
+      res.status(500).json({ message: 'Something went wrong',status:false });
+    }
   } catch (err) {
     res.status(401).json({ message: 'Invalid token' });
   }
