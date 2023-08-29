@@ -11,7 +11,7 @@ app.use(cors());
 
 //===================== GET HOME REQUEST FOR API ==============
 
-app.get('/', async (req, res) => {
+app.get('/main', async (req, res) => {
   res.json({status:"ok",message:"Server is working fine"});
 });
 
